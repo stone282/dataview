@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="中国经济数量级速查卡与可视化图鉴，基于 2025 年官方统计数据。">
+<title>中国经济数据速查 · 2025</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Microsoft YaHei", "微软雅黑", "PingFang SC", "SimSun", sans-serif;
+    background: #f5f8fc;
+    color: #16283a;
+    -webkit-font-smoothing: antialiased;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 20px 48px; }
+
+  header { padding: 38px 0 24px; border-bottom: 2px solid #185FA5; margin-bottom: 28px; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #185FA5; margin: 0 0 10px; }
+  h1 { font-size: 32px; font-weight: 700; margin: 0 0 8px; color: #12395f; letter-spacing: 0.5px; }
+  .lead { font-size: 14px; color: #5b6875; margin: 0; max-width: 680px; }
+  .stamp { display: inline-block; margin-top: 16px; font-size: 11px; color: #185FA5;
+           background: #eef5fc; border: 1px solid #b5d4f4; border-radius: 6px; padding: 6px 12px; }
+
+  h2 { font-size: 17px; font-weight: 700; color: #12395f; margin: 34px 0 14px;
+       display: flex; align-items: center; gap: 10px; }
+  h2::before { content: ""; width: 4px; height: 17px; background: #185FA5; border-radius: 2px; }
+
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .card {
+    display: block; text-decoration: none; color: inherit;
+    border: 1px solid #dce6f0; border-radius: 12px; padding: 22px 22px 20px;
+    background: #fff; transition: border-color .15s, box-shadow .15s, transform .15s;
+  }
+  .card:hover { border-color: #185FA5; box-shadow: 0 8px 24px rgba(24,95,165,.10); transform: translateY(-2px); }
+  .tag { font-size: 10.5px; font-weight: 700; letter-spacing: 1px; color: #fff;
+         background: #185FA5; border-radius: 4px; padding: 3px 8px; }
+  .tag.amber { background: #ba7517; }
+  .card h3 { font-size: 19px; margin: 14px 0 6px; color: #12395f; }
+  .card p { font-size: 12.5px; color: #5b6875; margin: 0 0 16px; min-height: 44px; }
+  .go { font-size: 12.5px; font-weight: 700; color: #185FA5; }
+  .go span { display: inline-block; transition: transform .15s; }
+  .card:hover .go span { transform: translateX(4px); }
+
+  table { width: 100%; border-collapse: collapse; background: #fff;
+          border: 1px solid #dce6f0; border-radius: 10px; overflow: hidden; font-size: 13px; }
+  th { text-align: left; font-size: 11px; letter-spacing: .5px; color: #5b6875;
+       background: #f1f6fb; padding: 10px 14px; font-weight: 700; }
+  td { padding: 11px 14px; border-top: 1px solid #edf2f7; }
+  td.size { color: #8a95a1; white-space: nowrap; font-size: 12px; }
+  td.act { text-align: right; white-space: nowrap; }
+  a.dl { color: #185FA5; text-decoration: none; font-weight: 700; font-size: 12.5px; }
+  a.dl:hover { text-decoration: underline; }
+
+  .note { margin-top: 28px; padding: 16px 20px; background: #eef5fc;
+          border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; font-size: 12.5px; color: #3c4c5c; }
+  .note p { margin: 0 0 8px; }
+  .note p:last-child { margin: 0; }
+  code { background: #fff; border: 1px solid #d5e3f2; border-radius: 4px;
+         padding: 2px 6px; font-family: Consolas, "Courier New", monospace; font-size: 11.5px; color: #12395f; }
+  footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #dce6f0;
+           font-size: 11.5px; color: #8a95a1; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  footer a { color: #185FA5; text-decoration: none; }
+
+  @media (max-width: 680px) {
+    h1 { font-size: 25px; }
+    .cards { grid-template-columns: 1fr; }
+    .card p { min-height: 0; }
+    table { font-size: 12px; }
+    td, th { padding-left: 10px; padding-right: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">CHINA ECONOMY · 2025</p>
+    <h1>中国经济数据速查</h1>
+    <p class="lead">做国内经济判断需要记住的数量级与常数。一页 A4 速查卡打底，九张图建立直觉；数据取自 2025 年国民经济统计公报与财政决算。</p>
+    <span class="stamp">2025 年官方口径 · 静态站点 · 无外部依赖</span>
+  </header>
+
+  <h2>在线查看</h2>
+  <div class="cards">
+    <a class="card" href="src/china-econ-cheatsheet.html">
+      <span class="tag">01 / 速查卡</span>
+      <h3>一页 A4 速查卡</h3>
+      <p>三档量级尺、六组基本盘、十个要背的常数，以及一个县的费米估算法与三个口径陷阱。</p>
+      <span class="go">打开页面 <span>→</span></span>
+    </a>
+    <a class="card" href="src/china-econ-visual.html">
+      <span class="tag amber">02 / 图鉴</span>
+      <h3>九图可视化图鉴</h3>
+      <p>100 人点阵、每秒钟的中国、财政天平、体制内漏斗、土地财政断崖与冷热分化条。</p>
+      <span class="go">打开页面 <span>→</span></span>
+    </a>
+  </div>
+
+  <h2>成品下载</h2>
+  <table>
+    <thead>
+      <tr><th>文件</th><th>用途</th><th>大小</th><th style="text-align:right">操作</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>A4 速查卡 PDF</td><td>单页打印、随手带走</td><td class="size">233 KB</td>
+        <td class="act"><a class="dl" href="dist/中国经济数量级速查卡_2025.pdf" target="_blank" rel="noopener">打开 ↗</a></td>
+      </tr>
+      <tr>
+        <td>速查卡 PNG 2x</td><td>屏幕查看、群里分享</td><td class="size">1588 × 2246</td>
+        <td class="act"><a class="dl" href="dist/中国经济数量级速查卡_2025_2x.png" target="_blank" rel="noopener">打开 ↗</a></td>
+      </tr>
+      <tr>
+        <td>速查卡 PNG 3x</td><td>接近打印级，放大看小字</td><td class="size">2382 × 3369</td>
+        <td class="act"><a class="dl" href="dist/中国经济数量级速查卡_2025_3x.png" target="_blank" rel="noopener">打开 ↗</a></td>
+      </tr>
+      <tr>
+        <td>可视化图鉴长图</td><td>九张图一张长图</td><td class="size">2320 × 4856</td>
+        <td class="act"><a class="dl" href="dist/中国经济可视化图鉴_2025.png" target="_blank" rel="noopener">打开 ↗</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <p><b>口径提示：</b>统计公报类数据为 2025 年官方口径；公务员与财政供养人数、县域估算等属于经验值，在速查卡中已单独标注，不与公报数字混用。</p>
+    <p><b>页面说明：</b>两个可视化页按桌面宽度排版，建议在电脑上查看；打印 PDF 时请关闭浏览器页眉页脚、缩放设为 100%。</p>
+    <p><b>复现成品：</b>源码在 <code>src/</code>，运行 <code>bash scripts/build.sh</code> 即可重新导出 <code>dist/</code> 下全部文件。</p>
+  </div>
+
+  <footer>
+    <span>数据来源：国家统计局 2025 年国民经济和社会发展统计公报、财政部 2025 年财政决算</span>
+    <a href="https://github.com/stone282/dataview" target="_blank" rel="noopener">GitHub ↗</a>
+  </footer>
+
+</div>
+</body>
+</html>

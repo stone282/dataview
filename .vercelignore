@@ -1,0 +1,8 @@
+# 静态站点不需要的内容，不上传到 Vercel
+.workbuddy/
+.git/
+scripts/
+.tmp-*/
+_measure.html
+node_modules/
+*.log
