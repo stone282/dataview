@@ -1,0 +1,6 @@
+# 仓库内统一 LF，避免 Windows 下 CRLF 破坏 bash 脚本
+* text=auto eol=lf
+
+# 二进制成品不做任何转换
+*.png binary
+*.pdf binary
