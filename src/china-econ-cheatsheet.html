@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>中国经济数量级速查卡 · 2025</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Microsoft YaHei", "微软雅黑", "SimSun", sans-serif;
+    color: #1c2733;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-variant-numeric: tabular-nums;
+  }
+  .page {
+    width: 210mm;
+    height: 297mm;
+    padding: 8.5mm 10mm 6mm 10mm;
+    background: #fff;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header { display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 0.7mm solid #185FA5; padding-bottom: 2.2mm; margin-bottom: 3.2mm; }
+  .brand { font-size: 19pt; font-weight: 700; letter-spacing: 0.4pt; line-height: 1.1; color: #12395f; }
+  .sub { font-size: 8pt; color: #5f6b78; margin-top: 1.6mm; letter-spacing: 0.1pt; }
+  .badge { font-size: 7.6pt; color: #185FA5; border: 0.3mm solid #b5d4f4; background: #eef5fc; border-radius: 1.2mm; padding: 1.2mm 2.4mm; white-space: nowrap; margin-bottom: 0.8mm; }
+
+  h2 { font-size: 9.5pt; font-weight: 700; color: #12395f; margin: 0 0 2.2mm 0; display: flex; align-items: center; gap: 1.8mm; }
+  h2 span { display: inline-block; font-size: 7.4pt; font-weight: 700; color: #fff; background: #185FA5; border-radius: 0.8mm; padding: 0.5mm 1.5mm; letter-spacing: 0.3pt; }
+  h2 em { font-style: normal; font-weight: 400; font-size: 7.4pt; color: #8893a0; margin-left: auto; }
+  section { margin-bottom: 4mm; }
+
+  .tiers { display: flex; flex-direction: column; gap: 1.3mm; }
+  .tier { display: flex; align-items: stretch; border: 0.25mm solid #d7e2ec; border-radius: 1.2mm; overflow: hidden; min-height: 8.6mm; }
+  .t-label { width: 24mm; flex: 0 0 24mm; background: #eef5fc; color: #12395f; font-size: 8.2pt; font-weight: 700; display: flex; align-items: center; justify-content: center; text-align: center; border-right: 0.25mm solid #d7e2ec; line-height: 1.25; }
+  .tier:nth-child(2) .t-label { background: #e3f1ee; }
+  .tier:nth-child(3) .t-label { background: #faf1e2; }
+  .pills { display: flex; flex-wrap: wrap; align-items: center; gap: 1.2mm 2.6mm; padding: 1.3mm 2.8mm; }
+  .pill { font-size: 8pt; white-space: nowrap; color: #34424f; }
+  .pill b { font-weight: 700; color: #12395f; font-size: 8.7pt; }
+  .pill.warn b { color: #a5600d; }
+  .sep { color: #c8d3de; font-size: 8pt; }
+
+  .grid6 { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: auto auto; gap: 2.2mm; }
+  .card { border: 0.25mm solid #d7e2ec; border-radius: 1.2mm; padding: 1.8mm 2.4mm 1.4mm; background: #fcfdfe; }
+  .card h3 { font-size: 8.7pt; font-weight: 700; color: #185FA5; margin: 0 0 1.3mm 0; padding-bottom: 1mm; border-bottom: 0.25mm solid #e2eaf2; letter-spacing: 0.2pt; }
+  .r { display: flex; justify-content: space-between; align-items: baseline; gap: 1.4mm; font-size: 7.85pt; line-height: 1.72; }
+  .r .k { color: #5b6875; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .r .v { color: #16283a; font-weight: 700; text-align: right; white-space: nowrap; flex: 0 0 auto; }
+  .r .v small { font-weight: 400; font-size: 6.9pt; color: #788491; margin-left: 0.5mm; }
+  .r.hl .v { color: #a5600d; }
+
+  .strip { margin-top: 2mm; background: #f4f8fc; border: 0.25mm solid #d7e2ec; border-radius: 1.2mm; padding: 1.5mm 2.4mm; font-size: 7.5pt; line-height: 1.55; color: #4a5865; }
+  .strip b { color: #12395f; }
+  .strip .grp { margin-right: 3mm; }
+
+  .const { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.8mm; }
+  .cbox { border: 0.25mm solid #d7e2ec; border-radius: 1.2mm; padding: 1.8mm 2mm 1.6mm; background: #f6f9fc; min-height: 20mm; }
+  .cbox .num { font-size: 13.5pt; font-weight: 700; color: #185FA5; line-height: 1.1; letter-spacing: -0.2pt; }
+  .cbox .lab { font-size: 7.7pt; font-weight: 700; color: #263746; margin-top: 0.8mm; line-height: 1.3; }
+  .cbox .use { font-size: 6.9pt; color: #7a8794; margin-top: 0.7mm; line-height: 1.35; }
+
+  .bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 2.6mm; }
+  .panel { border: 0.25mm solid #d7e2ec; border-left: 0.9mm solid #185FA5; border-radius: 1.2mm; padding: 2mm 2.6mm; background: #fbfcfe; }
+  .panel.amber { border-left-color: #ba7517; }
+  .panel h3 { font-size: 8.5pt; font-weight: 700; color: #12395f; margin: 0 0 1.2mm 0; }
+  .panel p { font-size: 7.5pt; line-height: 1.62; margin: 0 0 0.8mm 0; color: #465463; }
+  .panel p:last-child { margin-bottom: 0; }
+  .panel b { color: #16283a; }
+  .tag { display: inline-block; font-size: 6.6pt; color: #8a6a2f; background: #faf1e2; border-radius: 0.7mm; padding: 0.2mm 1.2mm; margin-left: 1mm; }
+
+  footer { margin-top: auto; border-top: 0.25mm solid #dfe7ef; padding-top: 1.6mm; display: flex; justify-content: space-between; gap: 4mm; font-size: 6.7pt; color: #8a95a1; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div>
+      <div class="brand">中国经济 · 数量级速查卡</div>
+      <div class="sub">2025 年官方数据口径 ｜ 国家统计局统计公报 · 财政部决算 · 央行 · 国家能源局 · 市场监管总局</div>
+    </div>
+    <div class="badge">A4 单页 ｜ 2026.11 版</div>
+  </header>
+
+  <section>
+    <h2><span>01</span> 一把对数尺：三档量级 <em>单位：万亿元人民币</em></h2>
+    <div class="tiers">
+      <div class="tier">
+        <div class="t-label">100 万亿级<br>金融存量</div>
+        <div class="pills">
+          <span class="pill">社融存量 <b>442</b></span><span class="sep">·</span>
+          <span class="pill">M2 <b>340</b></span><span class="sep">·</span>
+          <span class="pill">各项存款 <b>336</b></span><span class="sep">·</span>
+          <span class="pill">各项贷款 <b>276</b></span><span class="sep">·</span>
+          <span class="pill">GDP <b>140</b></span><span class="sep">·</span>
+          <span class="pill">A 股市值 <b>123</b></span><span class="sep">·</span>
+          <span class="pill">政府债务 <b>103</b></span>
+        </div>
+      </div>
+      <div class="tier">
+        <div class="t-label">10 万亿级<br>年度流量</div>
+        <div class="pills">
+          <span class="pill">居民收入总额 <b>61</b></span><span class="sep">·</span>
+          <span class="pill">社零 <b>50</b></span><span class="sep">·</span>
+          <span class="pill">固投 <b>49</b></span><span class="sep">·</span>
+          <span class="pill">进出口 <b>46</b></span><span class="sep">·</span>
+          <span class="pill">财政支出 <b>28.7</b></span><span class="sep">·</span>
+          <span class="pill">财政收入 <b>21.6</b></span><span class="sep">·</span>
+          <span class="pill">税收 <b>17.6</b></span>
+        </div>
+      </div>
+      <div class="tier">
+        <div class="t-label">1 万亿级<br>专项口径</div>
+        <div class="pills">
+          <span class="pill">房地产投资 <b>8.3</b></span><span class="sep">·</span>
+          <span class="pill">保费 <b>6.1</b></span><span class="sep">·</span>
+          <span class="pill">政府性基金 <b>5.8</b></span><span class="sep">·</span>
+          <span class="pill">赤字 <b>5.7</b></span><span class="sep">·</span>
+          <span class="pill warn">土地出让 <b>4.1</b></span><span class="sep">·</span>
+          <span class="pill">R&amp;D <b>3.9</b></span><span class="sep">·</span>
+          <span class="pill">出口退税 <b>2.1</b></span><span class="sep">·</span>
+          <span class="pill">国资经营 <b>0.85</b></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span>02</span> 六组基本盘 <em>2025 年末 / 全年</em></h2>
+    <div class="grid6">
+
+      <div class="card">
+        <h3>人 · 分母</h3>
+        <div class="r"><span class="k">总人口</span><span class="v">14.05 亿 <small>−340 万/年</small></span></div>
+        <div class="r"><span class="k">城镇化率</span><span class="v">67.9% <small>+0.9pct</small></span></div>
+        <div class="r"><span class="k">16–59 岁</span><span class="v">8.51 亿 <small>60.6%</small></span></div>
+        <div class="r"><span class="k">60 岁以上</span><span class="v">3.23 亿 <small>23.0%</small></span></div>
+        <div class="r"><span class="k">出生 / 死亡</span><span class="v">792 / 1,131 万</span></div>
+        <div class="r"><span class="k">就业 / 农民工</span><span class="v">7.25 / 3.01 亿</span></div>
+        <div class="r"><span class="k">人均可支配</span><span class="v">4.34 万 <small>中位 3.62</small></span></div>
+        <div class="r"><span class="k">城镇 / 农村</span><span class="v">5.65 / 2.45 万</span></div>
+      </div>
+
+      <div class="card">
+        <h3>GDP · 结构</h3>
+        <div class="r"><span class="k">GDP</span><span class="v">140.19 万亿 <small>+5.0%</small></span></div>
+        <div class="r"><span class="k">人均 GDP</span><span class="v">9.97 万 <small>1.40 万美元</small></span></div>
+        <div class="r"><span class="k">三次产业</span><span class="v">6.7/35.6/57.7%</span></div>
+        <div class="r"><span class="k">三驾马车拉动</span><span class="v">2.6/0.8/1.6 pct</span></div>
+        <div class="r"><span class="k">社零</span><span class="v">50.1 万亿 <small>+3.7%</small></span></div>
+        <div class="r"><span class="k">固定资产投资</span><span class="v">49.1 万亿 <small>−3.8%</small></span></div>
+        <div class="r hl"><span class="k">房地产开发投资</span><span class="v">8.28 万亿 <small>−17.2%</small></span></div>
+        <div class="r"><span class="k">进出口/出口/顺差</span><span class="v">45.5/27.0/8.5</span></div>
+      </div>
+
+      <div class="card">
+        <h3>财政 · 四本账</h3>
+        <div class="r"><span class="k">一般公共预算收入</span><span class="v">21.6 万亿 <small>−1.7%</small></span></div>
+        <div class="r"><span class="k">税收 / 非税</span><span class="v">17.6 / 3.97 万亿</span></div>
+        <div class="r"><span class="k">一般公共预算支出</span><span class="v">28.7 万亿 <small>+1.0%</small></span></div>
+        <div class="r"><span class="k">赤字 / 赤字率</span><span class="v">5.66 万亿 / 4.0%</span></div>
+        <div class="r hl"><span class="k">基金 / 土地出让</span><span class="v">5.77 / 4.1 万亿</span></div>
+        <div class="r"><span class="k">中央 / 地方收入</span><span class="v">9.4 / 12.2 万亿</span></div>
+        <div class="r"><span class="k">地方支出占比</span><span class="v">85% <small>靠转移支付</small></span></div>
+        <div class="r"><span class="k">政府债务</span><span class="v">102.5 万亿 <small>73.2%</small></span></div>
+      </div>
+
+      <div class="card">
+        <h3>税收 17.6 万亿拆解</h3>
+        <div class="r"><span class="k">国内增值税</span><span class="v">6.89 万亿 <small>39%</small></span></div>
+        <div class="r"><span class="k">企业所得税</span><span class="v">4.13 万亿 <small>23%</small></span></div>
+        <div class="r"><span class="k">国内消费税</span><span class="v">1.69 万亿</span></div>
+        <div class="r"><span class="k">个人所得税</span><span class="v">1.62 万亿 <small>+11.5%</small></span></div>
+        <div class="r"><span class="k">进口税 / 出口退税</span><span class="v">1.83 / −2.13</span></div>
+        <div class="r"><span class="k">房地产五税</span><span class="v">1.77 万亿</span></div>
+        <div class="r"><span class="k">证券交易印花税</span><span class="v">2,035 亿 <small>+57.8%</small></span></div>
+        <div class="r"><span class="k">税收 / GDP</span><span class="v">12.6% <small>全口径 26%</small></span></div>
+      </div>
+
+      <div class="card">
+        <h3>金融 · 资产</h3>
+        <div class="r"><span class="k">M2 / M1</span><span class="v">340 / 115 万亿</span></div>
+        <div class="r"><span class="k">社融存量 / 增量</span><span class="v">442 / 35.6 万亿</span></div>
+        <div class="r"><span class="k">存款 / 贷款</span><span class="v">336 / 276 万亿</span></div>
+        <div class="r"><span class="k">住户存款</span><span class="v">167 万亿 <small>人均 11.9 万</small></span></div>
+        <div class="r"><span class="k">人民币消费贷</span><span class="v">58.2 万亿</span></div>
+        <div class="r"><span class="k">A 股家数 / 市值</span><span class="v">5,469 / 123 万亿</span></div>
+        <div class="r"><span class="k">外储 / 汇率</span><span class="v">$3.36 万亿 / 7.14</span></div>
+        <div class="r"><span class="k">企业贷款利率</span><span class="v">3.22%</span></div>
+      </div>
+
+      <div class="card">
+        <h3>政府规模 · 实物量</h3>
+        <div class="r"><span class="k">公务员（行政编）</span><span class="v">~720 万 <small>0.5%</small></span></div>
+        <div class="r"><span class="k">事业编制</span><span class="v">~3,150 万</span></div>
+        <div class="r"><span class="k">编制内合计</span><span class="v">~3,980 万</span></div>
+        <div class="r"><span class="k">财政供养含编外</span><span class="v">6,800–7,900 万</span></div>
+        <div class="r"><span class="k">全社会用电量</span><span class="v">10.4 万亿度</span></div>
+        <div class="r"><span class="k">粮食 / 人均</span><span class="v">7.15 亿吨 / 509 kg</span></div>
+        <div class="r"><span class="k">原油进口 / 依存</span><span class="v">5.78 亿吨 / 73%</span></div>
+        <div class="r"><span class="k">快递 / 网民</span><span class="v">1,990 亿件 / 11.3 亿</span></div>
+      </div>
+
+    </div>
+    <div class="strip">
+      <span class="grp"><b>区域</b>　东部 73.1 万亿（52%）· 中部 29.9 · 西部 29.9 · 东北 6.5 · 长三角 34.7 · 粤苏各 13–14 万亿</span>
+      <span><b>全球</b>　GDP 占 ~17% · 制造业 ~30% · 人口 ~17%</span>
+    </div>
+  </section>
+
+  <section>
+    <h2><span>03</span> 十个要背下来的常数 <em>用于快速估算与政策换算</em></h2>
+    <div class="const">
+      <div class="cbox"><div class="num">1.4 万亿</div><div class="lab">1 个百分点 GDP</div><div class="use">政策说拉动 0.5 个点，直接乘</div></div>
+      <div class="cbox"><div class="num">15%</div><div class="lab">财政收入 / GDP</div><div class="use">反推地方财力，县域仅 7–9%</div></div>
+      <div class="cbox"><div class="num">43%</div><div class="lab">居民收入 / GDP</div><div class="use">约 61 万亿，内需偏弱的根源</div></div>
+      <div class="cbox"><div class="num">2.4×</div><div class="lab">M2 / GDP</div><div class="use">钱多而物价不涨的结构解释</div></div>
+      <div class="cbox"><div class="num">73%</div><div class="lab">政府负债率</div><div class="use">中央低、地方高；含隐性债务</div></div>
+      <div class="cbox"><div class="num">19%</div><div class="lab">出口 / GDP</div><div class="use">关税与外部冲击的传导弹性</div></div>
+      <div class="cbox"><div class="num">5.9 万亿</div><div class="lab">房地产相关政府收入</div><div class="use">土地 4.1 + 五税 1.8，占 GDP 4.2%</div></div>
+      <div class="cbox"><div class="num">740 度</div><div class="lab">每万元 GDP 耗电</div><div class="use">用电增速 ≈ GDP 增速 ×1.0–1.2</div></div>
+      <div class="cbox"><div class="num">5%</div><div class="lab">财政供养率</div><div class="use">约 20 人养 1 人，改革的底数</div></div>
+      <div class="cbox"><div class="num">0.9 pct</div><div class="lab">城镇化年增幅</div><div class="use">每年约 1,200 万人进城</div></div>
+    </div>
+  </section>
+
+  <section class="bottom">
+    <div class="panel">
+      <h3>用起来：一个县的账本（GDP 400 亿为例）<span class="tag">经验值，非官方统计</span></h3>
+      <p><b>收入</b> = GDP × 7–9% ≈ 30–36 亿；<b>支出</b> = 收入的 2–2.5 倍 ≈ 70–90 亿，缺口靠转移支付补。</p>
+      <p><b>土地出让</b> ≈ 5–15 亿；<b>债务余额</b> ≈ 100–200 亿，年付息 3–6 亿，占本级财力 5–10%。</p>
+      <p><b>体制内人数</b> ≈ 人口 × 3.5%（教师医护为主），工资性支出约占一般公共预算支出 40%。</p>
+    </div>
+    <div class="panel amber">
+      <h3>三个最常见的口径陷阱</h3>
+      <p><b>① 财政收入 21.6 万亿 ≠ 政府全部收入。</b>四本账合计约 30–32 万亿，含社保缴费口径可到 40 万亿级。</p>
+      <p><b>② 税收 / GDP 12.6% 不代表税负轻。</b>社保缴费、土地出让、行政收费不在税里，大口径宏观税负约 25–28%。</p>
+      <p><b>③ GDP 140 万亿 ≠ 老百姓的钱。</b>居民可支配收入总额仅 61 万亿，最大块留在企业与政府部门。</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>数据来源：国家统计局 2025 年统计公报、财政部 2025 年决算、央行、国家能源局、中国上市公司协会。</span>
+    <span>编制与供养人口为公开口径估算</span>
+  </footer>
+
+</div>
+</body>
+</html>
