@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="中国经济数量级速查卡与可视化图鉴，基于 2025 年官方统计数据。">
-<title>中国经济数据速查 · 2025</title>
+<meta name="description" content="把中国经济、财政、民生、金融与区域的关键数据整理成可查、可比、可下载的可视化。基于 2025 年官方统计口径。">
+<title>中国经济社会数据图谱 · dataview</title>
 <style>
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   html, body { margin: 0; padding: 0; }
   body {
     font-family: "Microsoft YaHei", "微软雅黑", "PingFang SC", "SimSun", sans-serif;
@@ -16,31 +17,87 @@
     font-variant-numeric: tabular-nums;
     line-height: 1.6;
   }
-  .wrap { max-width: 960px; margin: 0 auto; padding: 0 20px 48px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 22px 56px; }
+  a { color: #185FA5; }
 
-  header { padding: 38px 0 24px; border-bottom: 2px solid #185FA5; margin-bottom: 28px; }
+  header { padding: 40px 0 20px; border-bottom: 2px solid #185FA5; }
   .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #185FA5; margin: 0 0 10px; }
-  h1 { font-size: 32px; font-weight: 700; margin: 0 0 8px; color: #12395f; letter-spacing: 0.5px; }
-  .lead { font-size: 14px; color: #5b6875; margin: 0; max-width: 680px; }
-  .stamp { display: inline-block; margin-top: 16px; font-size: 11px; color: #185FA5;
-           background: #eef5fc; border: 1px solid #b5d4f4; border-radius: 6px; padding: 6px 12px; }
+  h1 { font-size: 34px; font-weight: 700; margin: 0 0 10px; color: #12395f; letter-spacing: .5px; }
+  .lead { font-size: 14px; color: #5b6875; margin: 0; max-width: 760px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .meta span { font-size: 11px; color: #185FA5; background: #eef5fc; border: 1px solid #b5d4f4;
+               border-radius: 6px; padding: 5px 11px; }
+  .meta span.amber { color: #8a5a10; background: #fdf6ea; border-color: #e8cd96; }
 
-  h2 { font-size: 17px; font-weight: 700; color: #12395f; margin: 34px 0 14px;
-       display: flex; align-items: center; gap: 10px; }
-  h2::before { content: ""; width: 4px; height: 17px; background: #185FA5; border-radius: 2px; }
+  nav.jump { display: flex; flex-wrap: wrap; gap: 18px; padding: 12px 0; font-size: 12px;
+             border-bottom: 1px solid #dce6f0; margin-bottom: 8px; }
+  nav.jump a { text-decoration: none; color: #5b6875; }
+  nav.jump a:hover { color: #185FA5; }
+
+  h2 { font-size: 18px; font-weight: 700; color: #12395f; margin: 36px 0 6px;
+       display: flex; align-items: center; gap: 10px; scroll-margin-top: 16px; }
+  h2::before { content: ""; width: 4px; height: 18px; background: #185FA5; border-radius: 2px; }
+  .sub { font-size: 12.5px; color: #8a95a1; margin: 0 0 18px 14px; }
+
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .kpi { background: #fff; border: 1px solid #dce6f0; border-radius: 12px; padding: 16px 18px 14px; }
+  .kpi .lab { font-size: 11.5px; color: #5b6875; margin: 0 0 6px; }
+  .kpi .num { font-size: 27px; font-weight: 700; color: #12395f; letter-spacing: -.5px; line-height: 1.2; }
+  .kpi .num em { font-style: normal; font-size: 14px; font-weight: 400; color: #5b6875; margin-left: 3px; }
+  .kpi .note { font-size: 11.5px; color: #8a95a1; margin: 6px 0 0; }
+  .kpi .note b { color: #185FA5; font-weight: 700; }
+
+  .scale { background: #fff; border: 1px solid #dce6f0; border-radius: 12px; padding: 20px 22px; }
+  .scale .cap { font-size: 11.5px; color: #8a95a1; margin: 0 0 16px; }
+  .srow { display: flex; align-items: center; gap: 12px; margin-bottom: 9px; }
+  .srow .sl { width: 104px; flex: 0 0 104px; font-size: 12px; color: #5b6875; text-align: right; }
+  .srow .track { flex: 1; height: 19px; background: #f2f6fa; border-radius: 3px; overflow: hidden; }
+  .srow .fill { display: block; height: 100%; border-radius: 3px; background: #185FA5; }
+  .srow .fill.light { background: #85b7eb; }
+  .srow .fill.amber { background: #ba7517; }
+  .srow .sv { width: 88px; flex: 0 0 88px; font-size: 12px; font-weight: 700; color: #16283a; }
+  .insight { margin-top: 16px; padding: 10px 14px; background: #f1f6fb; border-left: 3px solid #185FA5;
+             border-radius: 0 6px 6px 0; font-size: 12.5px; color: #3c4c5c; }
+  .insight b { color: #12395f; }
+
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px 14px; }
+  .filters button { font-family: inherit; font-size: 12px; cursor: pointer; color: #5b6875;
+                    background: #fff; border: 1px solid #dce6f0; border-radius: 20px; padding: 5px 14px; }
+  .filters button:hover { border-color: #185FA5; color: #185FA5; }
+  .filters button.on { color: #fff; background: #185FA5; border-color: #185FA5; }
+
+  .topics { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .topic { background: #fff; border: 1px solid #dce6f0; border-radius: 12px; padding: 18px 20px 16px; }
+  .topic[hidden] { display: none; }
+  .topic:last-child { grid-column: 1 / -1; }
+  .topic:last-child .rows { display: grid; grid-template-columns: 1fr 1fr; column-gap: 26px; }
+  .topic .th { display: flex; align-items: center; gap: 9px; margin-bottom: 4px; }
+  .topic .no { font-size: 10.5px; font-weight: 700; color: #fff; background: #185FA5;
+               border-radius: 4px; padding: 3px 7px; letter-spacing: 1px; }
+  .topic h3 { font-size: 16px; font-weight: 700; color: #12395f; margin: 0; }
+  .topic .desc { font-size: 11.5px; color: #8a95a1; margin: 0 0 12px; }
+  .rows { margin: 0; }
+  .row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+         padding: 6px 0; border-top: 1px solid #edf2f7; font-size: 12.5px; }
+  .row .k { color: #5b6875; }
+  .row .v { font-weight: 700; color: #12395f; white-space: nowrap; text-align: right; }
+  .row .v small { font-weight: 400; font-size: 11px; color: #8a95a1; margin-left: 5px; }
+  .topic .foot { margin-top: 12px; padding-top: 10px; border-top: 1px dashed #dce6f0;
+                 display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .topic .foot a { font-size: 11.5px; font-weight: 700; text-decoration: none; }
+  .topic .foot a:hover { text-decoration: underline; }
+  .todo { font-size: 11px; color: #8a5a10; background: #fdf6ea; border-radius: 5px; padding: 3px 8px; }
 
   .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .card {
-    display: block; text-decoration: none; color: inherit;
-    border: 1px solid #dce6f0; border-radius: 12px; padding: 22px 22px 20px;
-    background: #fff; transition: border-color .15s, box-shadow .15s, transform .15s;
-  }
+  .card { display: block; text-decoration: none; color: inherit; background: #fff;
+          border: 1px solid #dce6f0; border-radius: 12px; padding: 20px 22px;
+          transition: border-color .15s, box-shadow .15s, transform .15s; }
   .card:hover { border-color: #185FA5; box-shadow: 0 8px 24px rgba(24,95,165,.10); transform: translateY(-2px); }
   .tag { font-size: 10.5px; font-weight: 700; letter-spacing: 1px; color: #fff;
          background: #185FA5; border-radius: 4px; padding: 3px 8px; }
   .tag.amber { background: #ba7517; }
-  .card h3 { font-size: 19px; margin: 14px 0 6px; color: #12395f; }
-  .card p { font-size: 12.5px; color: #5b6875; margin: 0 0 16px; min-height: 44px; }
+  .card h3 { font-size: 18px; margin: 12px 0 6px; color: #12395f; }
+  .card p { font-size: 12.5px; color: #5b6875; margin: 0 0 14px; }
   .go { font-size: 12.5px; font-weight: 700; color: #185FA5; }
   .go span { display: inline-block; transition: transform .15s; }
   .card:hover .go span { transform: translateX(4px); }
@@ -49,27 +106,63 @@
           border: 1px solid #dce6f0; border-radius: 10px; overflow: hidden; font-size: 13px; }
   th { text-align: left; font-size: 11px; letter-spacing: .5px; color: #5b6875;
        background: #f1f6fb; padding: 10px 14px; font-weight: 700; }
-  td { padding: 11px 14px; border-top: 1px solid #edf2f7; }
+  td { padding: 10px 14px; border-top: 1px solid #edf2f7; }
   td.size { color: #8a95a1; white-space: nowrap; font-size: 12px; }
   td.act { text-align: right; white-space: nowrap; }
   a.dl { color: #185FA5; text-decoration: none; font-weight: 700; font-size: 12.5px; }
   a.dl:hover { text-decoration: underline; }
 
-  .note { margin-top: 28px; padding: 16px 20px; background: #eef5fc;
-          border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; font-size: 12.5px; color: #3c4c5c; }
-  .note p { margin: 0 0 8px; }
-  .note p:last-child { margin: 0; }
+  .notes { margin-top: 30px; padding: 16px 20px; background: #eef5fc;
+           border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; font-size: 12.5px; color: #3c4c5c; }
+  .notes p { margin: 0 0 8px; }
+  .notes p:last-child { margin: 0; }
   code { background: #fff; border: 1px solid #d5e3f2; border-radius: 4px;
          padding: 2px 6px; font-family: Consolas, "Courier New", monospace; font-size: 11.5px; color: #12395f; }
-  footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #dce6f0;
+  footer { margin-top: 30px; padding-top: 16px; border-top: 1px solid #dce6f0;
            font-size: 11.5px; color: #8a95a1; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-  footer a { color: #185FA5; text-decoration: none; }
+  footer a { text-decoration: none; }
 
-  @media (max-width: 680px) {
-    h1 { font-size: 25px; }
-    .cards { grid-template-columns: 1fr; }
-    .card p { min-height: 0; }
-    table { font-size: 12px; }
+  /* GDP → 财政收入 → 财政支出：桑基图模块 */
+  .flowbox { background: #fff; border: 1px solid #dce6f0; border-radius: 12px; padding: 20px 22px 18px; }
+  .fkpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
+  .fkpi { background: #f7fafd; border: 1px solid #e4edf6; border-radius: 8px; padding: 10px 12px; }
+  .fkpi .fl { font-size: 11px; color: #5b6875; margin: 0 0 3px; }
+  .fkpi .fv { font-size: 21px; font-weight: 700; color: #12395f; line-height: 1.3; letter-spacing: -.3px; }
+  .fkpi .fv em { font-style: normal; font-size: 12px; font-weight: 400; color: #5b6875; }
+  .fkpi .fn { font-size: 10.5px; color: #8a95a1; margin: 2px 0 0; }
+  .denom { margin: 0 0 16px; padding: 12px 14px; background: #f1f6fb; border-radius: 8px; }
+  .denom .dh { font-size: 11.5px; color: #5b6875; margin-bottom: 8px;
+               display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .denom .dh b { color: #12395f; }
+  .denom .dt { height: 20px; background: #dfe9f3; border-radius: 4px; overflow: hidden; }
+  .denom .df { display: block; height: 100%; background: linear-gradient(90deg, #185FA5, #6aa6dd); border-radius: 4px; }
+  .denom .dn { font-size: 11px; color: #8a95a1; margin: 7px 0 0; }
+  .sankey-wrap { overflow-x: auto; }
+  .sankey-wrap svg { display: block; width: 100%; min-width: 820px; height: auto; }
+  .sankey-wrap .link { opacity: .58; cursor: pointer; transition: opacity .15s; }
+  .sankey-wrap .link:hover, .sankey-wrap .link.hi { opacity: .96; }
+  .sankey-wrap .node { cursor: pointer; }
+  .sankey-wrap .lbl { font-family: "Microsoft YaHei", "微软雅黑", "PingFang SC", sans-serif;
+                      paint-order: stroke fill; stroke: #fff; stroke-width: 2.5px; stroke-linejoin: round; }
+  .flow-detail { margin-top: 12px; padding: 10px 14px; background: #f7fafd; border-left: 3px solid #185FA5;
+                 border-radius: 0 6px 6px 0; font-size: 12.5px; color: #3c4c5c; min-height: 42px; }
+  .flow-detail b { color: #12395f; }
+  .flow-detail .pct { color: #185FA5; font-weight: 700; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 11px; color: #5b6875; margin-top: 12px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px;
+              margin-right: 5px; vertical-align: -1px; }
+  .flow-check { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #dce6f0;
+                font-size: 11.5px; color: #5b6875; line-height: 1.8; }
+  .flow-check b { color: #12395f; }
+  .flow-note { font-size: 11.5px; color: #8a95a1; margin: 10px 0 0; line-height: 1.75; }
+
+  @media (max-width: 760px) {
+    h1 { font-size: 26px; }
+    .kpis, .topics, .cards { grid-template-columns: 1fr; }
+    .topic:last-child .rows { grid-template-columns: 1fr; }
+    .srow .sl { width: 78px; flex-basis: 78px; font-size: 11px; }
+    .srow .sv { width: 70px; flex-basis: 70px; font-size: 11px; }
+    .fkpis { grid-template-columns: 1fr 1fr; }
     td, th { padding-left: 10px; padding-right: 10px; }
   }
 </style>
@@ -78,13 +171,205 @@
 <div class="wrap">
 
   <header>
-    <p class="eyebrow">CHINA ECONOMY · 2025</p>
-    <h1>中国经济数据速查</h1>
-    <p class="lead">做国内经济判断需要记住的数量级与常数。一页 A4 速查卡打底，九张图建立直觉；数据取自 2025 年国民经济统计公报与财政决算。</p>
-    <span class="stamp">2025 年官方口径 · 静态站点 · 无外部依赖</span>
+    <p class="eyebrow">DATAVIEW · CHINA DATA ATLAS</p>
+    <h1>中国经济社会数据图谱</h1>
+    <p class="lead">把经济、财政、民生、金融与区域的关键数字整理成可查、可比、可下载的可视化。先看数量级，再看结构，最后看变化——判断一个行业或一份政策文件时，先有量级感，再谈观点。</p>
+    <div class="meta">
+      <span>2025 年官方口径</span>
+      <span>统计公报 · 财政决算 · 央行 · 能源局</span>
+      <span>纯静态 · 无外部依赖</span>
+      <span class="amber">按主题持续扩充中</span>
+    </div>
   </header>
 
-  <h2>在线查看</h2>
+  <nav class="jump" aria-label="页内导航">
+    <a href="#anchors">关键锚点</a>
+    <a href="#scale">量级尺</a>
+    <a href="#flow">财政流向</a>
+    <a href="#topics">数据主题</a>
+    <a href="#works">可视化作品</a>
+    <a href="#notes">口径与来源</a>
+  </nav>
+
+  <h2 id="anchors">先记住这六个数字</h2>
+  <p class="sub">所有后续分析的基准量级，单位与口径以速查卡为准</p>
+  <div class="kpis">
+    <div class="kpi">
+      <p class="lab">国内生产总值</p>
+      <div class="num">140.19<em>万亿元</em></div>
+      <p class="note">同比 <b>+5.0%</b> · 1 个百分点 ≈ 1.4 万亿</p>
+    </div>
+    <div class="kpi">
+      <p class="lab">总人口</p>
+      <div class="num">14.05<em>亿人</em></div>
+      <p class="note">每年净减 <b>约 340 万</b> · 城镇化 67.9%</p>
+    </div>
+    <div class="kpi">
+      <p class="lab">税收收入</p>
+      <div class="num">17.6<em>万亿元</em></div>
+      <p class="note">占 GDP <b>12.6%</b> · 全口径约 26%</p>
+    </div>
+    <div class="kpi">
+      <p class="lab">广义货币 M2</p>
+      <div class="num">340<em>万亿元</em></div>
+      <p class="note">约为 GDP 的 <b>2.4 倍</b></p>
+    </div>
+    <div class="kpi">
+      <p class="lab">社会消费品零售</p>
+      <div class="num">50.1<em>万亿元</em></div>
+      <p class="note">同比 <b>+3.7%</b> · 网上零售占 26.1%</p>
+    </div>
+    <div class="kpi">
+      <p class="lab">人均可支配收入</p>
+      <div class="num">4.34<em>万元</em></div>
+      <p class="note">中位数 <b>3.62 万</b> · 城乡比 2.31</p>
+    </div>
+  </div>
+
+  <h2 id="scale">一把量级尺：钱都在哪一层</h2>
+  <p class="sub">以社融存量 442.1 万亿为满格，真实线性比例，不做对数、不放大</p>
+  <div class="scale">
+    <p class="cap">单位：万亿元 · 深蓝为金融存量，浅蓝为年度流量，琥珀为专项口径</p>
+    <div class="srow"><span class="sl">社融存量</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="sv">442.1</span></div>
+    <div class="srow"><span class="sl">M2</span><span class="track"><span class="fill" style="width:76.9%"></span></span><span class="sv">340</span></div>
+    <div class="srow"><span class="sl">各项存款</span><span class="track"><span class="fill" style="width:76%"></span></span><span class="sv">336</span></div>
+    <div class="srow"><span class="sl">各项贷款</span><span class="track"><span class="fill" style="width:62.4%"></span></span><span class="sv">276</span></div>
+    <div class="srow"><span class="sl">GDP</span><span class="track"><span class="fill light" style="width:31.7%"></span></span><span class="sv">140.19</span></div>
+    <div class="srow"><span class="sl">财政收入</span><span class="track"><span class="fill light" style="width:4.9%"></span></span><span class="sv">21.6</span></div>
+    <div class="srow"><span class="sl">税收</span><span class="track"><span class="fill light" style="width:4%"></span></span><span class="sv">17.6</span></div>
+    <div class="srow"><span class="sl">土地出让</span><span class="track"><span class="fill amber" style="width:0.9%"></span></span><span class="sv">4.1</span></div>
+    <div class="insight">最反直觉的地方：金融存量铺满整条尺时，政府一年能直接支配的一般公共预算收入只有 <b>4.9% 宽</b>，土地出让只剩 <b>0.9%</b>。做 to G 生意，天花板天然比 to C 低一个量级。</div>
+  </div>
+
+  <h2 id="flow">GDP → 财政收入 → 财政支出</h2>
+  <p class="sub">一张桑基图看懂政府一年能调动多少钱、从哪来、花到哪；带宽严格按数值线性绘制，三段流量守恒</p>
+  <section class="flowbox" aria-label="财政资金流桑基图">
+    <div class="fkpis">
+      <div class="fkpi"><p class="fl">一般公共预算收入 / GDP</p><div class="fv">15.4<em>%</em></div><p class="fn">21.60 / 140.19 万亿</p></div>
+      <div class="fkpi"><p class="fl">税收 / GDP</p><div class="fv">12.6<em>%</em></div><p class="fn">17.60 / 140.19 万亿</p></div>
+      <div class="fkpi"><p class="fl">一般公共预算支出 / GDP</p><div class="fv">20.5<em>%</em></div><p class="fn">28.70 / 140.19 万亿</p></div>
+      <div class="fkpi"><p class="fl">全部可支出资金 / GDP</p><div class="fv">25.2<em>%</em></div><p class="fn">含基金、国资与赤字融资</p></div>
+    </div>
+
+    <div class="denom">
+      <div class="dh"><span><b>分母标尺</b> · GDP 140.19 万亿 = 100%</span><span>蓝色部分 = 政府全年可支出资金</span></div>
+      <div class="dt"><span class="df" style="width:25.2%"></span></div>
+      <p class="dn">35.32 万亿 ≈ GDP 的 25.2%。GDP 是增加值的分母、不是可分配的资金池（税收来自已计入 GDP 的企业和居民收入），因此不画成桑基的源节点；下面把蓝条这一段单独放大约 4 倍来看内部结构。</p>
+    </div>
+
+    <div class="sankey-wrap">
+      <svg id="sankey" viewBox="0 0 1000 470" role="img" aria-label="2025 年中国财政资金流桑基图：资金来源 35.32 万亿，经一般公共预算与基金国资预算，流向民生、其他公共支出及基金国资支出"></svg>
+    </div>
+    <div class="flow-detail" id="flow-detail"><b>全部流量合计 35.32 万亿元</b>，约占 GDP 的 <span class="pct">25.2%</span>。把鼠标移到任意色带或节点上可查看该笔资金的名称、数值与占 GDP 比例。</div>
+
+    <div class="legend">
+      <span><i style="background:#185FA5"></i>税收 / 一般公共预算</span>
+      <span><i style="background:#ba7517"></i>赤字与债务融资</span>
+      <span><i style="background:#85b7eb"></i>政府性基金与国资经营</span>
+      <span><i style="background:#187a8a"></i>民生支出（社保 / 教育 / 卫生）</span>
+      <span><i style="background:#6f8ba8"></i>其他预算支出</span>
+    </div>
+
+    <div class="flow-check">
+      <b>账本核对（单位：万亿元）</b><br>
+      ① 来源：税收 17.60 + 非税及调入 5.44 + 赤字融资 5.66 + 基金与国资收入 6.62 = <b>35.32</b><br>
+      ② 预算池：一般公共预算 28.70 + 基金与国资预算 6.62 = <b>35.32</b><br>
+      ③ 去向：社保就业 4.44 + 教育 4.34 + 卫生健康 2.14 + 其他公共支出 17.78 + 基金与国资支出 6.62 = <b>35.32</b>
+    </div>
+
+    <div class="insight">收 21.6、花 28.7，缺口 <b>5.66 万亿靠发债补齐</b>；再算上政府性基金和国资经营，政府一年能调动约 <b>35.3 万亿</b>，相当于每 4 元 GDP 有 1 元经过政府预算。但社保就业、教育、卫生健康三项合计仅 <b>10.92 万亿</b>，占一般公共预算支出 38%——钱的大头在基建、转移支付、债务付息和行政运转里。</div>
+
+    <p class="flow-note"><b>口径说明：</b>2025 年财政决算口径，单位万亿元。「非税及调入 5.44」= 非税收入 3.97 + 结转结余与调入 1.47，后者为使三段守恒的轧差平衡项（含预算稳定调节基金调入、上年结转等），并非单列官方科目；「基金与国资收入 6.62」= 政府性基金收入 5.77（含土地出让 4.1）+ 国资经营收入 0.85，其支出按收支平衡近似列示；「其他公共支出 17.78」= 28.70 − 4.44 − 4.34 − 2.14，为支出功能分类的轧差项。与只算一般公共预算的 15.4% 相比，把基金、国资和债务融资都算进来的广义口径才是 25.2%。</p>
+  </section>
+
+  <h2 id="topics">按主题查数据</h2>
+  <p class="sub">五个主题、二十余项核心指标，数值均出自下方两份已收录的可视化；点标签可只看一类</p>
+  <div class="filters" role="group" aria-label="主题筛选">
+    <button type="button" class="on" data-filter="all">全部</button>
+    <button type="button" data-filter="econ">经济总量</button>
+    <button type="button" data-filter="fiscal">财政税收</button>
+    <button type="button" data-filter="people">人口民生</button>
+    <button type="button" data-filter="finance">金融资产</button>
+    <button type="button" data-filter="region">实物与区域</button>
+  </div>
+
+  <div class="topics" id="topic-list">
+    <section class="topic" data-topic="econ">
+      <div class="th"><span class="no">01</span><h3>经济总量与增长</h3></div>
+      <p class="desc">分母、结构与三驾马车</p>
+      <div class="rows">
+        <div class="row"><span class="k">GDP</span><span class="v">140.19 万亿<small>+5.0%</small></span></div>
+        <div class="row"><span class="k">人均 GDP</span><span class="v">9.97 万元<small>约 1.40 万美元</small></span></div>
+        <div class="row"><span class="k">三次产业</span><span class="v">6.7 / 35.6 / 57.7%</span></div>
+        <div class="row"><span class="k">社会消费品零售</span><span class="v">50.1 万亿<small>+3.7%</small></span></div>
+        <div class="row"><span class="k">固定资产投资</span><span class="v">49.1 万亿<small>−3.8%</small></span></div>
+        <div class="row"><span class="k">货物进出口 / 顺差</span><span class="v">45.5 / 8.5 万亿</span></div>
+      </div>
+      <div class="foot"><a href="src/china-econ-cheatsheet.html">在速查卡中查看 →</a><span class="todo">可扩展：季度走势、分省横向对比</span></div>
+    </section>
+
+    <section class="topic" data-topic="fiscal">
+      <div class="th"><span class="no">02</span><h3>财政与税收</h3></div>
+      <p class="desc">四本账、税负结构与政府规模</p>
+      <div class="rows">
+        <div class="row"><span class="k">一般公共预算收入</span><span class="v">21.6 万亿<small>−1.7%</small></span></div>
+        <div class="row"><span class="k">税收收入</span><span class="v">17.6 万亿<small>增值税占 39%</small></span></div>
+        <div class="row"><span class="k">支出 / 赤字</span><span class="v">28.7 / 5.66 万亿</span></div>
+        <div class="row"><span class="k">土地出让收入</span><span class="v">4.1 万亿<small>较峰值 −53%</small></span></div>
+        <div class="row"><span class="k">政府债务余额</span><span class="v">102.5 万亿<small>负债率 73.2%</small></span></div>
+        <div class="row"><span class="k">公务员 / 财政供养</span><span class="v">~720 万 / ~7,000 万</span></div>
+      </div>
+      <div class="foot"><a href="src/china-econ-visual.html">在图鉴中看财政天平 →</a><span class="todo">可扩展：转移支付流向、专项债结构</span></div>
+    </section>
+
+    <section class="topic" data-topic="people">
+      <div class="th"><span class="no">03</span><h3>人口与民生</h3></div>
+      <p class="desc">分母的变化，是所有需求的长期斜率</p>
+      <div class="rows">
+        <div class="row"><span class="k">总人口</span><span class="v">14.05 亿<small>年净减 340 万</small></span></div>
+        <div class="row"><span class="k">60 岁及以上</span><span class="v">3.23 亿<small>23.0%</small></span></div>
+        <div class="row"><span class="k">16–59 岁</span><span class="v">8.51 亿<small>60.6%</small></span></div>
+        <div class="row"><span class="k">出生 / 死亡</span><span class="v">792 / 1,131 万</span></div>
+        <div class="row"><span class="k">就业 / 农民工</span><span class="v">7.25 / 3.01 亿</span></div>
+        <div class="row"><span class="k">人均可支配收入</span><span class="v">4.34 万<small>中位 3.62 万</small></span></div>
+        <div class="row"><span class="k">城镇化率</span><span class="v">67.9%<small>每年 +0.9pct</small></span></div>
+      </div>
+      <div class="foot"><a href="src/china-econ-visual.html">在图鉴中看 100 个中国人 →</a><span class="todo">可扩展：收入分组、社保收支</span></div>
+    </section>
+
+    <section class="topic" data-topic="finance">
+      <div class="th"><span class="no">04</span><h3>金融与资产</h3></div>
+      <p class="desc">钱的总量、价格与沉淀在哪里</p>
+      <div class="rows">
+        <div class="row"><span class="k">M2 / M1</span><span class="v">340 / 115 万亿</span></div>
+        <div class="row"><span class="k">社融存量 / 增量</span><span class="v">442 / 35.6 万亿</span></div>
+        <div class="row"><span class="k">存款 / 贷款</span><span class="v">336 / 276 万亿</span></div>
+        <div class="row"><span class="k">住户存款</span><span class="v">167 万亿<small>人均 11.9 万</small></span></div>
+        <div class="row"><span class="k">A 股家数 / 市值</span><span class="v">5,469 家 / 123 万亿</span></div>
+        <div class="row"><span class="k">房地产开发投资</span><span class="v">8.28 万亿<small>−17.2%</small></span></div>
+        <div class="row"><span class="k">企业贷款利率</span><span class="v">3.22%</span></div>
+      </div>
+      <div class="foot"><a href="src/china-econ-cheatsheet.html">在速查卡中查看 →</a><span class="todo">可扩展：居民部门资产负债、利率传导</span></div>
+    </section>
+
+    <section class="topic" data-topic="region">
+      <div class="th"><span class="no">05</span><h3>实物量与区域</h3></div>
+      <p class="desc">用实物量校验名义值，用区域看集中度</p>
+      <div class="rows">
+        <div class="row"><span class="k">全社会用电量</span><span class="v">10.4 万亿度<small>740 度/万元 GDP</small></span></div>
+        <div class="row"><span class="k">粮食产量</span><span class="v">7.15 亿吨<small>人均 509 kg</small></span></div>
+        <div class="row"><span class="k">快递 / 网民</span><span class="v">1,990 亿件 / 11.3 亿</span></div>
+        <div class="row"><span class="k">原油进口依存度</span><span class="v">73%</span></div>
+        <div class="row"><span class="k">东部 GDP</span><span class="v">73.1 万亿<small>占全国 52%</small></span></div>
+        <div class="row"><span class="k">长三角 / 京津冀</span><span class="v">34.7 / 12.0 万亿</span></div>
+        <div class="row"><span class="k">占全球 GDP / 制造业</span><span class="v">~17% / ~30%</span></div>
+      </div>
+      <div class="foot"><a href="src/china-econ-visual.html">在图鉴中看区域与全球 →</a><span class="todo">可扩展：能耗强度、城市群对比</span></div>
+    </section>
+  </div>
+
+  <h2 id="works">可视化作品与成品</h2>
+  <p class="sub">两份可交互页面（纯 HTML/SVG，离线可开）与五个可直接使用的导出文件；财政资金流桑基图在主页可直接交互查看</p>
   <div class="cards">
     <a class="card" href="src/china-econ-cheatsheet.html">
       <span class="tag">01 / 速查卡</span>
@@ -100,42 +385,189 @@
     </a>
   </div>
 
-  <h2>成品下载</h2>
-  <table>
-    <thead>
-      <tr><th>文件</th><th>用途</th><th>大小</th><th style="text-align:right">操作</th></tr>
-    </thead>
+  <table style="margin-top:16px">
+    <thead><tr><th>成品</th><th>用途</th><th>规格 / 体积</th><th style="text-align:right">操作</th></tr></thead>
     <tbody>
-      <tr>
-        <td>A4 速查卡 PDF</td><td>单页打印、随手带走</td><td class="size">233 KB</td>
-        <td class="act"><a class="dl" href="dist/中国经济数量级速查卡_2025.pdf" target="_blank" rel="noopener">打开 ↗</a></td>
-      </tr>
-      <tr>
-        <td>速查卡 PNG 2x</td><td>屏幕查看、群里分享</td><td class="size">1588 × 2246</td>
-        <td class="act"><a class="dl" href="dist/中国经济数量级速查卡_2025_2x.png" target="_blank" rel="noopener">打开 ↗</a></td>
-      </tr>
-      <tr>
-        <td>速查卡 PNG 3x</td><td>接近打印级，放大看小字</td><td class="size">2382 × 3369</td>
-        <td class="act"><a class="dl" href="dist/中国经济数量级速查卡_2025_3x.png" target="_blank" rel="noopener">打开 ↗</a></td>
-      </tr>
-      <tr>
-        <td>可视化图鉴长图</td><td>九张图一张长图</td><td class="size">2320 × 4856</td>
-        <td class="act"><a class="dl" href="dist/中国经济可视化图鉴_2025.png" target="_blank" rel="noopener">打开 ↗</a></td>
-      </tr>
+      <tr><td>A4 速查卡 PDF</td><td>单页打印、随手带走</td><td class="size">233 KB</td>
+        <td class="act"><a class="dl" href="dist/中国经济数量级速查卡_2025.pdf" target="_blank" rel="noopener">打开 ↗</a></td></tr>
+      <tr><td>速查卡 PNG 2x</td><td>屏幕查看、群里分享</td><td class="size">1588 × 2246</td>
+        <td class="act"><a class="dl" href="dist/中国经济数量级速查卡_2025_2x.png" target="_blank" rel="noopener">打开 ↗</a></td></tr>
+      <tr><td>速查卡 PNG 3x</td><td>接近打印级，放大看小字</td><td class="size">2382 × 3369</td>
+        <td class="act"><a class="dl" href="dist/中国经济数量级速查卡_2025_3x.png" target="_blank" rel="noopener">打开 ↗</a></td></tr>
+      <tr><td>可视化图鉴长图</td><td>九张图一张长图</td><td class="size">2320 × 4856</td>
+        <td class="act"><a class="dl" href="dist/中国经济可视化图鉴_2025.png" target="_blank" rel="noopener">打开 ↗</a></td></tr>
+      <tr><td>财政资金流桑基图 SVG</td><td>矢量图，可放进报告或再编辑</td><td class="size">1000 × 470</td>
+        <td class="act"><a class="dl" href="dist/财政资金流桑基图_2025.svg" target="_blank" rel="noopener">打开 ↗</a></td></tr>
     </tbody>
   </table>
 
-  <div class="note">
-    <p><b>口径提示：</b>统计公报类数据为 2025 年官方口径；公务员与财政供养人数、县域估算等属于经验值，在速查卡中已单独标注，不与公报数字混用。</p>
-    <p><b>页面说明：</b>两个可视化页按桌面宽度排版，建议在电脑上查看；打印 PDF 时请关闭浏览器页眉页脚、缩放设为 100%。</p>
-    <p><b>复现成品：</b>源码在 <code>src/</code>，运行 <code>bash scripts/build.sh</code> 即可重新导出 <code>dist/</code> 下全部文件。</p>
+  <div class="notes" id="notes">
+    <p><b>口径提示：</b>统计公报、财政决算、央行与能源局类数据为 2025 年官方口径；公务员与财政供养人数、县域估算等属于公开口径的估算值，在速查卡中已单独标注，不与公报数字混用。</p>
+    <p><b>阅读提示：</b>两份可视化页按桌面宽度排版，手机上会横向滚动；打印 PDF 时请关闭浏览器页眉页脚、缩放设为 100%。</p>
+    <p><b>项目结构：</b>页面源码在 <code>src/</code>，导出成品在 <code>dist/</code>，主页数据按主题以静态结构维护；桑基图的节点与流量定义在主页内联脚本里，独立 SVG 由渲染结果抽取生成，两者始终同源。运行 <code>bash scripts/build.sh</code> 可重新导出全部成品。</p>
   </div>
 
   <footer>
-    <span>数据来源：国家统计局 2025 年国民经济和社会发展统计公报、财政部 2025 年财政决算</span>
+    <span>数据来源：国家统计局《2025 年国民经济和社会发展统计公报》、财政部 2025 年决算、央行、国家能源局、市场监管总局等</span>
     <a href="https://github.com/stone282/dataview" target="_blank" rel="noopener">GitHub ↗</a>
   </footer>
 
 </div>
+<script>
+  (function () {
+    var buttons = document.querySelectorAll('.filters button');
+    var topics = document.querySelectorAll('#topic-list .topic');
+    Array.prototype.forEach.call(buttons, function (btn) {
+      btn.addEventListener('click', function () {
+        var f = btn.getAttribute('data-filter');
+        Array.prototype.forEach.call(buttons, function (b) {
+          b.classList.toggle('on', b === btn);
+        });
+        Array.prototype.forEach.call(topics, function (t) {
+          t.hidden = f !== 'all' && t.getAttribute('data-topic') !== f;
+        });
+      });
+    });
+  }());
+
+  /* 财政资金流桑基图：数据驱动，节点坐标与流量守恒由脚本计算 */
+  (function () {
+    var svg = document.getElementById('sankey');
+    var detail = document.getElementById('flow-detail');
+    if (!svg || !detail) return;
+
+    var GDP = 140.19, SCALE = 9.6, NW = 12, TOP = 52, BOX = 384;
+    var COLX = [196, 496, 826], GAPS = [8, 18, 8];
+    var ORDER = [['tax', 'non', 'debt', 'fund'], ['gb', 'fb'], ['ss', 'edu', 'health', 'other', 'fexp']];
+
+    var NODES = [
+      { id:'tax',    c:0, name:'税收收入',        v:17.60, color:'#185FA5', note:'增值税 6.89、企业所得税 4.13、消费税 1.69、个税 1.62 等' },
+      { id:'non',    c:0, name:'非税及调入',      v:5.44,  color:'#4a86c8', note:'非税收入 3.97 + 结转结余与调入 1.47（轧差平衡项）' },
+      { id:'debt',   c:0, name:'赤字 / 债务融资', v:5.66,  color:'#ba7517', note:'赤字率 4.0%，由国债与地方债发行补足' },
+      { id:'fund',   c:0, name:'基金与国资收入',  v:6.62,  color:'#85b7eb', note:'政府性基金 5.77（含土地出让 4.1）+ 国资经营 0.85' },
+      { id:'gb',     c:1, name:'一般公共预算',    v:28.70, color:'#185FA5', note:'收入 21.6 + 赤字融资 5.66 + 调入 1.47，对应支出 28.7' },
+      { id:'fb',     c:1, name:'基金与国资预算',  v:6.62,  color:'#5f9fd4', note:'政府性基金预算与国有资本经营预算合计' },
+      { id:'ss',     c:2, name:'社会保障和就业',  v:4.44,  color:'#187a8a', note:'一般公共预算支出功能分类' },
+      { id:'edu',    c:2, name:'教育',            v:4.34,  color:'#187a8a', note:'一般公共预算支出功能分类' },
+      { id:'health', c:2, name:'卫生健康',        v:2.14,  color:'#187a8a', note:'一般公共预算支出功能分类' },
+      { id:'other',  c:2, name:'其他公共支出',    v:17.78, color:'#6f8ba8', note:'城乡社区、农林水、交通、科技、国防、债务付息、行政运转等' },
+      { id:'fexp',   c:2, name:'基金与国资支出',  v:6.62,  color:'#5f9fd4', note:'按收支平衡近似列示，含土地相关与专项债项目支出' }
+    ];
+    var LINKS = [
+      ['tax', 'gb', 17.60], ['non', 'gb', 5.44], ['debt', 'gb', 5.66], ['fund', 'fb', 6.62],
+      ['gb', 'ss', 4.44], ['gb', 'edu', 4.34], ['gb', 'health', 2.14], ['gb', 'other', 17.78],
+      ['fb', 'fexp', 6.62]
+    ];
+
+    var byId = {};
+    NODES.forEach(function (n) { byId[n.id] = n; n.inY = 0; n.outY = 0; });
+
+    ORDER.forEach(function (ids, c) {
+      var total = 0;
+      ids.forEach(function (id) { total += byId[id].v * SCALE; });
+      var h = total + (ids.length - 1) * GAPS[c];
+      var y = TOP + (BOX - h) / 2;
+      ids.forEach(function (id) {
+        var n = byId[id];
+        n.x = COLX[c]; n.y = y; n.h = n.v * SCALE; n.inY = y; n.outY = y;
+        y += n.h + GAPS[c];
+      });
+    });
+
+    function money(v) { return v.toFixed(2) + ' 万亿元'; }
+    function pct(v) { return (v / GDP * 100).toFixed(1) + '%'; }
+    function band(x0, y0, x1, y1, h) {
+      var d = (x1 - x0) * 0.52;
+      return 'M' + x0 + ' ' + y0 + ' C' + (x0 + d) + ' ' + y0 + ',' + (x1 - d) + ' ' + y1 + ',' + x1 + ' ' + y1 +
+             ' L' + x1 + ' ' + (y1 + h) + ' C' + (x1 - d) + ' ' + (y1 + h) + ',' + (x0 + d) + ' ' + (y0 + h) + ',' + x0 + ' ' + (y0 + h) + ' Z';
+    }
+
+    var parts = [];
+    parts.push('<defs>');
+    LINKS.forEach(function (L, i) {
+      var a = byId[L[0]], b = byId[L[1]];
+      parts.push('<linearGradient id="g' + i + '" x1="0" y1="0" x2="1" y2="0">' +
+                 '<stop offset="0%" stop-color="' + a.color + '"/><stop offset="100%" stop-color="' + b.color + '"/></linearGradient>');
+    });
+    parts.push('</defs>');
+    parts.push('<text x="20" y="30" font-size="12.5" font-weight="700" fill="#12395f">① 资金来源 35.32</text>' +
+               '<text x="470" y="30" font-size="12.5" font-weight="700" fill="#12395f">② 预算池 35.32</text>' +
+               '<text x="810" y="30" font-size="12.5" font-weight="700" fill="#12395f">③ 支出方向 35.32</text>');
+
+    LINKS.forEach(function (L, i) {
+      var a = byId[L[0]], b = byId[L[1]], h = L[2] * SCALE;
+      var y0 = a.outY, y1 = b.inY;
+      a.outY += h; b.inY += h;
+      parts.push('<path class="link" data-l="' + i + '" d="' + band(a.x + NW, y0, b.x, y1, h) + '" fill="url(#g' + i + ')">' +
+                 '<title>' + a.name + ' → ' + b.name + '：' + money(L[2]) + '（占 GDP ' + pct(L[2]) + '）</title></path>');
+    });
+
+    NODES.forEach(function (n) {
+      var anchor = n.c === 0 ? 'end' : 'start';
+      var tx = n.c === 0 ? n.x - 9 : n.x + NW + 9;
+      var ty = n.y + n.h / 2 - 3;
+      var cap = n.c === 1
+        ? '<rect x="' + (tx - 7) + '" y="' + (ty - 15) + '" width="138" height="33" rx="5" ' +
+          'fill="#ffffff" fill-opacity="0.94" stroke="#dce6f0" stroke-width="1"/>'
+        : '';
+      parts.push('<g data-n="' + n.id + '">' +
+                 '<rect class="node" x="' + n.x + '" y="' + n.y + '" width="' + NW + '" height="' + n.h +
+                 '" rx="2" fill="' + n.color + '"/>' + cap +
+                 '<text class="lbl" x="' + tx + '" y="' + ty + '" text-anchor="' + anchor + '">' +
+                 '<tspan font-size="12" font-weight="700" fill="#16283a">' + n.name + '</tspan>' +
+                 '<tspan x="' + tx + '" dy="14" font-size="11" fill="#7b8996">' + n.v.toFixed(2) +
+                 ' · GDP ' + pct(n.v) + '</tspan></text>' +
+                 '<title>' + n.name + '：' + money(n.v) + '（占 GDP ' + pct(n.v) + '）</title></g>');
+    });
+    parts.push('<text x="20" y="458" font-size="11" fill="#8a95a1">色带宽度 ∝ 金额 · 三段合计均为 35.32 万亿元 · 悬停查看明细</text>' +
+               '<text x="980" y="458" text-anchor="end" font-size="11" fill="#8a95a1">单位：万亿元</text>');
+    svg.innerHTML = parts.join('');
+
+    var bands = svg.querySelectorAll('.link');
+    var defaultHTML = detail.innerHTML;
+    var current = null;
+
+    function clearHi() {
+      Array.prototype.forEach.call(bands, function (p) { p.classList.remove('hi'); });
+    }
+    function hit(el) {
+      while (el && el !== svg) {
+        if (el.getAttribute) {
+          var l = el.getAttribute('data-l'), n = el.getAttribute('data-n');
+          if (l !== null) return 'l:' + l;
+          if (n !== null) return 'n:' + n;
+        }
+        el = el.parentNode;
+      }
+      return null;
+    }
+    function show(k) {
+      if (k === current) return;
+      current = k;
+      clearHi();
+      var t = k.split(':');
+      if (t[0] === 'l') {
+        var i = Number(t[1]), L = LINKS[i];
+        bands[i].classList.add('hi');
+        detail.innerHTML = '<b>' + byId[L[0]].name + ' → ' + byId[L[1]].name + '</b> · ' + money(L[2]) +
+                           ' · 占 GDP <span class="pct">' + pct(L[2]) + '</span>';
+      } else {
+        var n = byId[t[1]];
+        LINKS.forEach(function (L, i) {
+          if (L[0] === n.id || L[1] === n.id) bands[i].classList.add('hi');
+        });
+        detail.innerHTML = '<b>' + n.name + '</b> · ' + money(n.v) +
+                           ' · 占 GDP <span class="pct">' + pct(n.v) + '</span>　' + n.note;
+      }
+    }
+    svg.addEventListener('mouseover', function (e) {
+      var k = hit(e.target);
+      if (k) show(k);
+    });
+    svg.addEventListener('mouseleave', function () {
+      current = null; clearHi(); detail.innerHTML = defaultHTML;
+    });
+  }());
+</script>
 </body>
 </html>
